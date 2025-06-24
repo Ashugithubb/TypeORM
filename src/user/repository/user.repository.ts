@@ -2,12 +2,15 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
 import { UserDto } from '../dto/user.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { AppDataSource } from 'src/data.source';
 
 @Injectable()
 export class UserRepository extends Repository<User> {
   constructor(private datasource:DataSource){
     super(User,datasource.createEntityManager());
   }
+ 
+  
   async AddUser(dto: UserDto) {
     return await this.save(dto);
   }
