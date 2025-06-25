@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { TUser } from './tuser.entity';
+import { User } from './user.entity';
 import { Media } from './media.entity';
 
 @Entity('tweets')
@@ -16,11 +16,11 @@ export class Tweet {
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
-  @ManyToOne(() => TUser, user => user.tweets, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, user => user.tweets, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
-  user: TUser;
+  user: User;
 
-  // New Relationship
+
   @OneToMany(() => Media, media => media.tweet)
   media: Media[];
 }

@@ -13,7 +13,7 @@ export class Media {
   @PrimaryColumn()
   id: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   tweet_id: string;
 
   @Column()

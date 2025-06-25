@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
-import { User } from './user/entity/user.entity';
+import { User } from './practice/user/entity/user.entity';
 
-
+//for seeding
 
 export const AppDataSource = new DataSource({
   type: 'postgres', 
