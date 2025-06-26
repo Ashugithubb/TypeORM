@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, OneToMany, DeleteDateColumn } from 'typeorm';
 
 import { User } from 'src/twitter/users/entities/user.entity';
 import { Media } from 'src/twitter/media/entities/media.entity';
@@ -20,6 +20,8 @@ export class Tweet {
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deletedAt?: Date;
   @ManyToOne(() => User, user => user.tweets, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;
@@ -28,11 +30,11 @@ export class Tweet {
   @OneToMany(() => Media, media => media.tweet)
   media: Media[];
 
-@OneToMany(() => Comment, comment => comment.tweet)
-comments: Comment[];
+  @OneToMany(() => Comment, comment => comment.tweet)
+  comments: Comment[];
 
-@OneToMany(() => Like, like => like.tweet)
-likes: Like[];
+  @OneToMany(() => Like, like => like.tweet)
+  likes: Like[];
 
 
 }

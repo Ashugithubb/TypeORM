@@ -12,7 +12,8 @@ import { Media } from './twitter/media/entities/media.entity';
 import { Tweet } from './twitter/tweets/entities/tweet.entity';
 import { Like } from './twitter/likes/entities/like.entity';
 import { Comment } from './twitter/comments/entities/comment.entity';
-import { BluetickModule } from './twitter/bluetick/bluetick.module';
+import { BluetickModule } from './twitter/payments/bluetick.module';
+import { BlueTick } from './twitter/payments/entities/bluetick.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,9 +29,9 @@ import { BluetickModule } from './twitter/bluetick/bluetick.module';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [User,Media,Tweet,Like,Comment],
+        entities: [User,Media,Tweet,Like,Comment,BlueTick],
         // entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        migrations: [__dirname + '/migrations/*{.ts,.js}'],
+        // migrations: [__dirname + '/migrations/*{.ts,.js}'],
 
         // synchronize: false,
         synchronize: true,
@@ -42,6 +43,7 @@ import { BluetickModule } from './twitter/bluetick/bluetick.module';
     CommentsModule,
     LikesModule,
     BluetickModule,
+    UsersModule
   ],
   controllers: [],
 

@@ -1,6 +1,6 @@
-import { IsUUID, IsInt } from 'class-validator';
+import { IsUUID, IsInt, IsString } from 'class-validator';
 export class CreateLikeDto {
-  @IsUUID()
+  @IsString()
   user_id: string;
 
   @IsInt()

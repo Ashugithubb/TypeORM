@@ -16,7 +16,7 @@ export class CommentRepository extends Repository<Comment> {
   async findById(id: number) {
     return await this.findOne({
       where: { id },
-      relations: ['user', 'tweet'], // Include relations if needed
+      relations: ['user', 'tweet'], 
     });
   }
 

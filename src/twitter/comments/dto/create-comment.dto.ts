@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString, IsUUID, IsInt } from 'class-validator';
 
 export class CreateCommentDto {
-  @IsUUID()
+  @IsString()
   user_id: string;
 
   @IsInt()

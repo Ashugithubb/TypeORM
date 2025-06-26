@@ -1,3 +1,4 @@
+import { BlueTick } from 'src/twitter/payments/entities/bluetick.entity';
 import { Comment } from 'src/twitter/comments/entities/comment.entity';
 
 import { Like } from 'src/twitter/likes/entities/like.entity';
@@ -11,6 +12,8 @@ import {
   ManyToMany,
   JoinTable,
   Index,
+  OneToOne,
+  DeleteDateColumn,
 } from 'typeorm';
 
 
@@ -53,10 +56,17 @@ export class User {
 
   @OneToMany(() => Tweet, tweet => tweet.user)
   tweets: Tweet[];
+  @Column({ default: false })
+  isVerified: boolean
+  
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deletedAt?: Date;
 
   @OneToMany(() => Comment, comment => comment.user)
   comments: Comment[];
   @OneToMany(() => Like, like => like.user)
   likes: Like[];
+  @OneToOne(() => BlueTick, blueTick => blueTick.user)
+  blueTick: BlueTick;
 
 }

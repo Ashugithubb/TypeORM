@@ -27,7 +27,7 @@ export class Comment {
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
-  // Relations
+
   @ManyToOne(() => User, user => user, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User;

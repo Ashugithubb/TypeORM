@@ -32,7 +32,7 @@ export class TweetRepository extends Repository<Tweet> {
   }
 
   async deleteTweet(id: number) {
-    return await super.delete(id);
+    return await super.softDelete(id);
   }
 
   async upsertTweet(id: number, dto: Partial<CreateTweetDto>) {

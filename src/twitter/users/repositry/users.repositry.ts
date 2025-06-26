@@ -3,7 +3,6 @@ import { User } from "../entities/user.entity";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateUserDto } from "../dto/create-user.dto";
 
-
 @Injectable()
 export class UserRepository extends Repository<User>{
     constructor(private datasource:DataSource){
@@ -32,7 +31,7 @@ export class UserRepository extends Repository<User>{
         }
       
         async deleteUser(id: string) {
-          return await super.delete(id); 
+          return await super.softDelete(id); 
         }
         async upsertUser(id:string,dto:Partial<CreateUserDto>){
             const found = this.findById(id);

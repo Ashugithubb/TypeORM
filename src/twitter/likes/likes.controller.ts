@@ -1,34 +1,61 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { LikesService } from './likes.service';
+import {
+  Controller,
+  Post,
+  Delete,
+  Get,
+  Param,
+  Body,
+  Query,
+  HttpCode,
+  ParseIntPipe,
+} from '@nestjs/common';
+
 import { CreateLikeDto } from './dto/create-like.dto';
-import { UpdateLikeDto } from './dto/update-like.dto';
+import { Like } from './entities/like.entity';
+import { LikeService } from './likes.service';
 
 @Controller('likes')
-export class LikesController {
-  constructor(private readonly likesService: LikesService) {}
+export class LikeController {
+  constructor(private readonly likeService: LikeService) {}
+
 
   @Post()
-  create(@Body() createLikeDto: CreateLikeDto) {
-    return this.likesService.create(createLikeDto);
+  async likeTweet(@Body() createLikeDto: CreateLikeDto): Promise<Like> {
+    return this.likeService.likeTweet(createLikeDto);
   }
 
-  @Get()
-  findAll() {
-    return this.likesService.findAll();
+  
+  @Delete(':user_id/:tweet_id')
+  @HttpCode(204)
+  async unlikeTweet(
+    @Param('user_id') user_id: string,
+    @Param('tweet_id', ParseIntPipe) tweet_id: number,
+  ): Promise<void> {
+    return this.likeService.unlikeTweet(user_id, tweet_id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.likesService.findOne(+id);
+  @Get('tweet/:tweet_id')
+  async getTweetLikes(
+    @Param('tweet_id', ParseIntPipe) tweet_id: number,
+  ): Promise<Like[]> {
+    return this.likeService.getTweetLikes(tweet_id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLikeDto: UpdateLikeDto) {
-    return this.likesService.update(+id, updateLikeDto);
+ 
+  @Get('count/:tweet_id')
+  async getLikeCount(
+    @Param('tweet_id', ParseIntPipe) tweet_id: number,
+  ): Promise<number> {
+    return this.likeService.getLikeCount(tweet_id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.likesService.remove(+id);
+
+  @Get('has-liked')
+  async hasUserLikedTweet(
+    @Query('user_id') user_id: string,
+    @Query('tweet_id', ParseIntPipe) tweet_id: number,
+  ): Promise<{ liked: boolean }> {
+    const liked = await this.likeService.hasUserLikedTweet(user_id, tweet_id);
+    return { liked };
   }
 }
