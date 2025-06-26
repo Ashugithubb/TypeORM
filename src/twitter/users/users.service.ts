@@ -106,9 +106,14 @@ export class UsersService {
   }
 
   
-
+   
   //  Soft delete user and their tweets (in transaction)
   async deleteUser(id: string) {
+     const usersRelations = await this.repo.findOne({
+        where: {id},
+        relations :['tweets','likes','posts']
+      }
+    )
     await this.dataSource.transaction(async (manager) => {
       await manager.getRepository(Tweet).softDelete({ user_id: id });
       await manager.getRepository(User).softDelete(id);
