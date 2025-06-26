@@ -1,26 +1,41 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTweetDto } from './dto/create-tweet.dto';
-import { UpdateTweetDto } from './dto/update-tweet.dto';
+import { TweetRepository } from './repositry/tweets.repositry';
+
 
 @Injectable()
 export class TweetsService {
-  create(createTweetDto: CreateTweetDto) {
-    return 'This action adds a new tweet';
+  constructor(private readonly tweetRepo: TweetRepository) {}
+
+  async create(createTweetDto: CreateTweetDto) {
+    return await this.tweetRepo.addTweet(createTweetDto);
   }
 
-  findAll() {
-    return `This action returns all tweets`;
+  async findAll() {
+    return await this.tweetRepo.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tweet`;
+  async findOne(id: number) {
+    const tweet = await this.tweetRepo.findById(id);
+    if (!tweet) {
+      throw new NotFoundException(`Tweet with ID ${id} not found`);
+    }
+    return tweet;
   }
 
-  update(id: number, updateTweetDto: UpdateTweetDto) {
-    return `This action updates a #${id} tweet`;
+  async update(id: number, updateTweetDto: Partial<CreateTweetDto>) {
+    return await this.tweetRepo.updateTweet(id, updateTweetDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tweet`;
+  async remove(id: number) {
+    const result = await this.tweetRepo.deleteTweet(id);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Tweet with ID ${id} not found`);
+    }
+    return 'deleted';
+  }
+
+  async upsert(id: number, dto: Partial<CreateTweetDto>) {
+    return await this.tweetRepo.upsertTweet(id, dto);
   }
 }

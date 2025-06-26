@@ -1,5 +1,5 @@
-import { Tweet } from 'src/twitter/entity/tweeets.entity';
-import { User } from 'src/twitter/entity/user.entity';
+import { Tweet } from 'src/twitter/tweets/entities/tweet.entity';
+import { User } from 'src/twitter/users/entities/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

@@ -1,26 +1,39 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMediaDto } from './dto/create-media.dto';
-import { UpdateMediaDto } from './dto/update-media.dto';
+import { MediaRepository } from './repositry/media.repositry';
+
 
 @Injectable()
 export class MediaService {
-  create(createMediaDto: CreateMediaDto) {
-    return 'This action adds a new media';
+  constructor(private readonly mediaRepo: MediaRepository) {}
+
+  async create(createMediaDto: CreateMediaDto) {
+    return await this.mediaRepo.addMedia(createMediaDto);
   }
 
-  findAll() {
-    return `This action returns all media`;
+  async findAll() {
+    return await this.mediaRepo.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} media`;
+  async findOne(id: string) {
+    const media = await this.mediaRepo.findById(id);
+    if (!media) {
+      throw new NotFoundException(`Media with ID ${id} not found`);
+    }
+    return media;
   }
 
-  update(id: number, updateMediaDto: UpdateMediaDto) {
-    return `This action updates a #${id} media`;
+  async update(id: string, updateMediaDto: Partial<CreateMediaDto>) {
+    return await this.mediaRepo.updateMedia(id, updateMediaDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} media`;
+  async remove(id: string) {
+    const result = await this.mediaRepo.deleteMedia(id);
+    if (result === 'deleted') return result;
+    else throw new NotFoundException(`Media with ID ${id} not found`);
+  }
+
+  async upsert(id: string, dto: Partial<CreateMediaDto>) {
+    return await this.mediaRepo.upsertMedia(id, dto);
   }
 }
