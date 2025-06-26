@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { TweetsService } from './tweets.service';
 import { CreateTweetDto } from './dto/create-tweet.dto';
-import { UpdateTweetDto } from './dto/update-tweet.dto';
+
 
 @Controller('tweets')
 export class TweetsController {
@@ -23,7 +23,7 @@ export class TweetsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTweetDto: UpdateTweetDto) {
+  update(@Param('id') id: string, @Body() updateTweetDto: Partial<CreateTweetDto>) {
     return this.tweetsService.update(+id, updateTweetDto);
   }
 
