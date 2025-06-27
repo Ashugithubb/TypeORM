@@ -14,18 +14,21 @@ import {
   Index,
   OneToOne,
   DeleteDateColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 
 @Entity('Users')
 export class User {
-  @PrimaryColumn()
+  // @PrimaryGeneratedColumn()
+  // id:number
+  @PrimaryColumn()  // this i should make@PrimaryGenerated
   id: string;
 
-  @Column({ unique: true })
+  @Column() // made unique during app intialization
   username: string;
 
-  @Column({ unique: true })
+  @Column()
   email: string;
 
   @Column({ nullable: true })
@@ -58,7 +61,10 @@ export class User {
   tweets: Tweet[];
   @Column({ default: false })
   isVerified: boolean
-  
+
+  @Column({ default: null, nullable: true })
+  deleteType: 'Permanently' | 'Temporary' | null;
+
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
   deletedAt?: Date;
 

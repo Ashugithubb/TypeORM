@@ -115,17 +115,19 @@ export class UsersService {
     try {
       const user = await queryRunner.manager.findOne(User, {
         where: { id },
-        relations: ['tweets', 'likes', 'media', 'comments', 'blueTick']
+        relations: ['tweets', 'likes', 'comments', 'blueTick']
       })
       if (!user) {
         throw new NotFoundException(`User with id ${id} coest not exist`)
       }
       await queryRunner.manager.softRemove([
-        ...user.tweets,
-        ...user.comments,
-        user.blueTick,
-        ...user.likes
-      ])
+        user,
+        ...(user.tweets ?? []),
+        ...(user.comments ?? []),
+        ...(user.likes ?? []),
+        ...(user.blueTick ? [user.blueTick] : [])
+      ]);
+
       await queryRunner.commitTransaction();
       return user;
     }
