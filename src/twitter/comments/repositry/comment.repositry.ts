@@ -52,11 +52,11 @@ export class CommentRepository extends Repository<Comment> {
     }
   }
 
-  async findByTweetId(tweet_id: number) {
-    return await this.find({
-      where: { tweet_id },
-      order: { created_at: 'DESC' },
-      relations: ['user'],
-    });
-  }
+  // async findByTweetId(tweet_id: number) {
+  //   return await this.find({
+  //     where: { tweet_id },
+  //     order: { created_at: 'DESC' },
+  //     relations: ['user'],
+  //   });
+  // }
 }

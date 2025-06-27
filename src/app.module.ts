@@ -32,7 +32,6 @@ import { BlueTick } from './twitter/payments/entities/bluetick.entity';
         entities: [User,Media,Tweet,Like,Comment,BlueTick],
         // entities: [__dirname + '/**/*.entity{.ts,.js}'],
         // migrations: [__dirname + '/migrations/*{.ts,.js}'],
-
         // synchronize: false,
         synchronize: true,
       }),

@@ -30,8 +30,8 @@ export class Tweet {
   @OneToMany(() => Media, media => media.tweet)
   media: Media[];
 
-  @OneToMany(() => Comment, comment => comment.tweet)
-  comments: Comment[];
+  // @OneToMany(() => Comment, comment => comment.tweet)
+  // comments: Comment[];
 
   @OneToMany(() => Like, like => like.tweet)
   likes: Like[];

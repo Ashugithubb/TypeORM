@@ -9,5 +9,6 @@ import { MediaRepository } from './repositry/media.repositry';
    imports:[TypeOrmModule.forFeature([Media])],
   controllers: [MediaController],
   providers: [MediaService,MediaRepository],
+  exports: [MediaRepository]
 })
 export class MediaModule {}

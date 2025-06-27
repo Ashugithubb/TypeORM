@@ -9,5 +9,6 @@ import { TweetRepository } from './repositry/tweets.repositry';
    imports:[TypeOrmModule.forFeature([Tweet])],
   controllers: [TweetsController],
   providers: [TweetsService,TweetRepository],
+  exports: [TweetRepository]
 })
 export class TweetsModule {}

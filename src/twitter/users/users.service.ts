@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './repositry/users.repositry';
 import { PaginationDTO } from './dto/pagination.dto';
@@ -12,8 +12,8 @@ export class UsersService {
   constructor(
     private readonly repo: UserRepository,
     private readonly tweetrepo: TweetRepository,
-    private readonly dataSource: DataSource, 
-  ) {}
+    private readonly dataSource: DataSource,
+  ) { }
 
   async getUsersWithTweets() {
     return await this.repo
@@ -105,19 +105,37 @@ export class UsersService {
     return this.repo.updateUser(id, updateUserDto);
   }
 
-  
-   
+
+
   //  Soft delete user and their tweets (in transaction)
   async deleteUser(id: string) {
-     const usersRelations = await this.repo.findOne({
-        where: {id},
-        relations :['tweets','likes','posts']
+    const queryRunner = this.dataSource.createQueryRunner()
+    await queryRunner.connect()
+    await queryRunner.startTransaction();
+    try {
+      const user = await queryRunner.manager.findOne(User, {
+        where: { id },
+        relations: ['tweets', 'likes', 'media', 'comments', 'blueTick']
+      })
+      if (!user) {
+        throw new NotFoundException(`User with id ${id} coest not exist`)
       }
-    )
-    await this.dataSource.transaction(async (manager) => {
-      await manager.getRepository(Tweet).softDelete({ user_id: id });
-      await manager.getRepository(User).softDelete(id);
-    });
+      await queryRunner.manager.softRemove([
+        ...user.tweets,
+        ...user.comments,
+        user.blueTick,
+        ...user.likes
+      ])
+      await queryRunner.commitTransaction();
+      return user;
+    }
+    catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException('Could not soft-delete user and their data.', error.message);
+    } finally {
+      await queryRunner.release();
+    }
+
   }
 
   //  Upsert user

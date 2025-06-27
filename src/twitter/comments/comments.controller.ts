@@ -4,7 +4,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 
 @Controller('comments')
 export class CommentsController {
-  constructor(private readonly commentsService: CommentsService) {}
+  constructor(private readonly commentsService: CommentsService) { }
 
   @Post()
   create(@Body() createCommentDto: CreateCommentDto) {
@@ -30,4 +30,17 @@ export class CommentsController {
   remove(@Param('id') id: string) {
     return this.commentsService.remove(+id);
   }
+
+  @Post(':type/:id')
+  async commentOnTweet(
+    @Param('type') type: 'Tweet' | 'Media',
+    @Param('id') id: string,
+    @Body() comment: CreateCommentDto,
+  ) {
+    return this.commentsService.commentOnTweet(type, id, comment);
+  }
+
+
+
+
 }

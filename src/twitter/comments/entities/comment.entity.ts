@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
+  PrimaryColumn,
 } from 'typeorm';
 
 
@@ -18,11 +19,19 @@ export class Comment {
   @Column()
   user_id: string;
 
-  @Column()
-  tweet_id: number;
+  // @Column()
+  // tweet_id: number;
 
   @Column('text')
   content: string;
+
+
+  @Column({default:123})
+  commentOn:string
+
+  @PrimaryColumn()
+  commentableId:string
+
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
@@ -32,7 +41,7 @@ export class Comment {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Tweet, tweet => tweet, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'tweet_id' })
-  tweet: Tweet;
+  // @ManyToOne(() => Tweet, tweet => tweet, { onDelete: 'CASCADE' })
+  // @JoinColumn({ name: 'tweet_id' })
+  // tweet: Tweet;
 }
