@@ -15,6 +15,8 @@ import { Comment } from './twitter/comments/entities/comment.entity';
 import { BluetickModule } from './twitter/payments/bluetick.module';
 import { BlueTick } from './twitter/payments/entities/bluetick.entity';
 import { AppService } from './app.sservices';
+import { AuthModule } from './auth/auth.module';
+import { HasingModule } from './hasing/hasing.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -43,10 +45,13 @@ import { AppService } from './app.sservices';
     CommentsModule,
     LikesModule,
     BluetickModule,
-    UsersModule
+    UsersModule,
+    AuthModule,
+    HasingModule
   ],
   controllers: [],
-  providers:[AppService]
+  providers:[AppService],
+ 
 
 })
 export class AppModule { }

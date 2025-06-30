@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRepository } from './repositry/users.repositry';
 import { PaginationDTO } from './dto/pagination.dto';
@@ -6,6 +6,7 @@ import { TweetRepository } from '../tweets/repositry/tweets.repositry';
 import { DataSource } from 'typeorm';
 import { Tweet } from '../tweets/entities/tweet.entity';
 import { User } from './entities/user.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth';
 
 @Injectable()
 export class UsersService {
@@ -84,10 +85,12 @@ export class UsersService {
 
   // Create user
   async create(createUserDto: CreateUserDto) {
+      
     return this.repo.AddUser(createUserDto);
   }
 
   // Pagination
+  
   async GetUsers(paginationdto: PaginationDTO) {
     return this.repo.find({
       skip: paginationdto.skip,
@@ -96,8 +99,9 @@ export class UsersService {
   }
 
   //  Find single user
-  async findOne(id: string) {
-    return await this.repo.findById(id);
+  async findOne(email: string) {
+    const user = await this.repo.findByEmail(email);
+    return user;
   }
 
   //  Update user

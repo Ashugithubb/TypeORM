@@ -30,7 +30,8 @@ export class User {
 
   @Column()
   email: string;
-
+  @Column({default:"Strong@Password"})
+  password :string;
   @Column({ nullable: true })
   bio: string;
 

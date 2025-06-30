@@ -5,9 +5,10 @@ import { User } from './entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from './repositry/users.repositry';
 import { TweetRepository } from '../tweets/repositry/tweets.repositry';
+import { HasingModule } from 'src/hasing/hasing.module';
 
 @Module({
-   imports:[TypeOrmModule.forFeature([User])],
+   imports:[TypeOrmModule.forFeature([User]),HasingModule],
   controllers: [UsersController],
   providers: [UsersService,UserRepository,TweetRepository],
   exports:[UserRepository,UsersService]
