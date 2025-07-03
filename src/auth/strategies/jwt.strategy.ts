@@ -1,19 +1,25 @@
-import { PassportStrategy } from "@nestjs/passport";
-import { ExtractJwt, Strategy } from "passport-jwt";
-// import { AuthJwtPayload } from "../types/auth.jwtPayload";
-import { Injectable } from "@nestjs/common";
+import { PassportStrategy } from '@nestjs/passport';
+import { Strategy } from 'passport-jwt';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Request } from 'express';
+import { AuthJwtPayload } from '../type/jwtpayload';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy){
-  constructor(){
-   super({
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SECRET as string, 
-  ignoreExpiration :false
-})
-
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor() {
+    super({
+      jwtFromRequest: (req: Request) => {
+        if (!req.cookies || !req.cookies['access_token']) {
+          throw new UnauthorizedException('Access token not found in cookies');
+        }
+        return req.cookies['access_token'];
+      },
+      secretOrKey: process.env.JWT_SECRET,
+      ignoreExpiration: false,
+    });
   }
-  validate(payload:string){
-    return {payload}
+
+  validate(payload: AuthJwtPayload) {
+    return payload; 
   }
 }

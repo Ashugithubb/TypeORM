@@ -17,8 +17,13 @@ export class UserRepository extends Repository<User> {
     return await this.save(dto);
   }
 
+
+  async findById(id:string){
+    return this.findOneBy({id})
+  }
   async findByEmail(email: string) {
   const user = await this.findOneBy({ email });
+  console.log(user.email);
    const  emailMatched = user.email;
    const password = user.password
   return {emailMatched,password};

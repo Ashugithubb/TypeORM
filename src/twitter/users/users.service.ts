@@ -103,6 +103,10 @@ export class UsersService {
     const user = await this.repo.findByEmail(email);
     return user;
   }
+  async findOneByID(id: string) {
+    const user = await this.repo.findById(id);
+    return user;
+  }
 
   //  Update user
   update(id: string, updateUserDto: Partial<CreateUserDto>) {

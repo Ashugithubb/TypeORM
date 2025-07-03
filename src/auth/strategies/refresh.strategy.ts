@@ -1,19 +1,26 @@
-import { PassportStrategy } from "@nestjs/passport";
-import { ExtractJwt, Strategy } from "passport-jwt";
-// import { AuthJwtPayload } from "../types/auth.jwtPayload";
-import { Injectable } from "@nestjs/common";
+import { PassportStrategy } from '@nestjs/passport';
+import { Strategy } from 'passport-jwt';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Request } from 'express';
+import { AuthJwtPayload } from '../type/jwtpayload';
+
 
 @Injectable()
-export class RefreshJwtStrategy extends PassportStrategy(Strategy,"refresh-jwt"){
-  constructor(){
-   super({
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.REFRESH_JWT_SECRET as string, 
-   ignoreExpiration :false
-})
-
+export class RefreshJwtStrategy extends PassportStrategy(Strategy, 'refresh-jwt') {
+  constructor() {
+    super({
+      jwtFromRequest: (req: Request) => {
+        if (!req.cookies || !req.cookies['refresh_token']) {
+          throw new UnauthorizedException('Refresh token not found in cookies');
+        }
+        return req.cookies['refresh_token'];
+      },
+      secretOrKey: process.env.REFRESH_JWT_SECRET,
+      ignoreExpiration: false,
+    });
   }
-  validate(payload:string){
-    return {payload}
+
+  validate(payload: AuthJwtPayload) {
+    return payload; 
   }
 }

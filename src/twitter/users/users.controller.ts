@@ -20,9 +20,10 @@ export class UsersController {
           return this.usersService.GetUsers(paginationdto);
       }
 
+   @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+    return this.usersService.findOneByID(id);
   }
 
   @Patch(':id')

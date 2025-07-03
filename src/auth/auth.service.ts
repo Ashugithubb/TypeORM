@@ -4,6 +4,17 @@ import { JwtService } from '@nestjs/jwt';
 import { HasingService } from 'src/hasing/hasing.service';
 import { UsersService } from 'src/twitter/users/users.service';
 import refreshJwtConfig from './config/refresh-jwt.config';
+import { Response } from 'express';
+import { Request } from 'express';
+import { AuthJwtPayload } from './type/jwtpayload';
+
+// interface RequestWithCookies extends Request {
+//   cookies: {
+//     refresh_token?: string;
+//     access_token?: string;
+//     [key: string]: any;
+//   };
+// }
 
 @Injectable()
 export class AuthService {
@@ -14,38 +25,58 @@ export class AuthService {
         private configService: ConfigService
     ) { }
     async validateUser({ email, password }: { email: string, password: string }) {
+        console.log(email);
         const user = await this.userService.findOne(email);
         if (!user) throw new UnauthorizedException("User email not found");
         const matched = this.hasingService.compare(password, user.password);
         if (!matched) throw new UnauthorizedException("Invalid password");
 
-        const payload = { sub: user.emailMatched, username: user.password };
+        const payload = { sub: user.emailMatched };
 
         return { email: user.emailMatched }
     }
 
-    async login(email: string) {
+    async login(email: string, res: Response) {
         const payload = { sub: email };
         const token = this.jwtService.sign(payload)
         const refreshtoken = this.jwtService.sign(payload, this.refreshTokenConfig)
+
+        res.cookie('access_token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            maxAge: 60 * 1000,
+        });
+
+        res.cookie('refresh_token', refreshtoken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            maxAge:15 * 60 * 1000,
+        });
+
         return {
-            token,
-            refreshtoken,
+            "msg": "Loged In Successfully"
         }
     }
 
-    refreshAccessToken(refreshToken: string) {
-    const payload = this.jwtService.verify(refreshToken, {
-        secret: this.refreshTokenConfig.secret,
-    });
 
-    const email = payload.sub;
-    console.log(payload);
 
-    const newAccessToken = this.jwtService.sign({ sub: email });
+    async refreshAccessTokenFromGuard(user: AuthJwtPayload, res: Response) {
+        const email = user.sub;
 
-    return { access_token: newAccessToken };
-}
+        const newAccessToken = this.jwtService.sign({ sub: email });
+
+        res.cookie('access_token', newAccessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            maxAge: 15 * 60 * 1000,
+        });
+
+        return { message: 'Access token refreshed' };
+    }
+
 
 
 
